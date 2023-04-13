@@ -19,7 +19,3 @@ From Reinforcement Learning to Deep Reinforcement Learning
     - DQN, Double DQN and Dueling DQN 
 
 4. Actor-Critic methods (5/19 (예정), 최선묵)
-
-
-## Notice
-Lecture notes of the seminar is getting updated in this [link](https://sunmookchoi.notion.site/All-about-RL-DRL-461bd020a42c4278ace61f49b766114d)!
