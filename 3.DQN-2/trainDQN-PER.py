@@ -65,7 +65,7 @@ agent = DQN_Agent(input_shape=env.observation_space.shape,
                   epsilon=1,
                   epsilon_decay=0.999,
                   epsilon_min=0.05,
-                  memory_type='',
+                  memory_type='PER',
                   buffer_size=2**15,
                   pretrained='')
 num_episodes = 1000
@@ -85,7 +85,7 @@ plt.ylabel('Total Rewards', fontsize=7)
 plt.xticks(fontsize=5)
 plt.yticks(fontsize=5)
 plt.grid(linewidth=.1)
-plt.savefig('figs/'+fig_title+'.png', bbox_inches='tight')
+plt.savefig('figs_PER/'+fig_title+'.png', bbox_inches='tight')
 plt.close()
 
 
@@ -97,7 +97,7 @@ agent = Double_DQN_Agent(input_shape=env.observation_space.shape,
                          epsilon=1,
                          epsilon_decay=0.999,
                          epsilon_min=0.05,
-                         memory_type='',
+                         memory_type='PER',
                          buffer_size=2**15,
                          pretrained='')
 num_episodes = 1000
@@ -117,7 +117,7 @@ plt.ylabel('Total Rewards', fontsize=7)
 plt.xticks(fontsize=5)
 plt.yticks(fontsize=5)
 plt.grid(linewidth=.1)
-plt.savefig('figs/'+fig_title+'.png', bbox_inches='tight')
+plt.savefig('figs_PER/'+fig_title+'.png', bbox_inches='tight')
 plt.close()
 
 
@@ -129,7 +129,7 @@ agent = Dueling_DQN_Agent(input_shape=env.observation_space.shape,
                          epsilon=1,
                          epsilon_decay=0.999,
                          epsilon_min=0.05,
-                         memory_type='',
+                         memory_type='PER',
                          buffer_size=2**15,
                          pretrained='')
 num_episodes = 1000
@@ -149,7 +149,7 @@ plt.ylabel('Total Rewards', fontsize=7)
 plt.xticks(fontsize=5)
 plt.yticks(fontsize=5)
 plt.grid(linewidth=.1)
-plt.savefig('figs/'+fig_title+'.png', bbox_inches='tight')
+plt.savefig('figs_PER/'+fig_title+'.png', bbox_inches='tight')
 plt.close()
 
 
@@ -161,7 +161,7 @@ agent = Double_Dueling_DQN_Agent(input_shape=env.observation_space.shape,
                                 epsilon=1,
                                 epsilon_decay=0.999,
                                 epsilon_min=0.05,
-                                memory_type='',
+                                memory_type='PER',
                                 buffer_size=2**15,
                                 pretrained='')
 num_episodes = 1000
@@ -181,5 +181,5 @@ plt.ylabel('Total Rewards', fontsize=7)
 plt.xticks(fontsize=5)
 plt.yticks(fontsize=5)
 plt.grid(linewidth=.1)
-plt.savefig('figs/'+fig_title+'.png', bbox_inches='tight')
+plt.savefig('figs_PER/'+fig_title, bbox_inches='tight')
 plt.close()

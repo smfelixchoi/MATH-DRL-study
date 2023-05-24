@@ -147,24 +147,6 @@ class Double_DQN_Agent(DQN_Agent):
         return action
     
 class Dueling_DQN_Agent(DQN_Agent):
-    def __init__(self, input_shape=(4,), num_actions=2, gamma=0.99, epsilon=0.25, epsilon_decay=0.99, buffer_size=500, pretr_agent=''):
-        self.agent = self.nn_model(input_size=input_shape, action_dim=num_actions)
-
-        self.input_shape = input_shape
-        self.num_actions = num_actions
-
-        if pretr_agent:
-            self.continue_training(pretr_agent)
-
-        self.target_agent = self.nn_model(input_size=input_shape, action_dim=num_actions)
-        self.update_target()
-
-        self.optimizer = tf.keras.optimizers.Adam()
-        self.buffer = ReplayBuffer(capacity=buffer_size)
-        self.gamma = gamma
-        self.epsilon = epsilon
-        self.epsilon_decay = epsilon_decay
-
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
@@ -182,24 +164,6 @@ class Dueling_DQN_Agent(DQN_Agent):
         return model
     
 class Double_Dueling_DQN_Agent(Double_DQN_Agent):
-    def __init__(self, input_shape=(4,), num_actions=2, gamma=0.99, epsilon=0.25, epsilon_decay=0.99, buffer_size=500, pretr_agent=''):
-        self.agent = self.nn_model(input_size=input_shape, action_dim=num_actions)
-
-        self.input_shape = input_shape
-        self.num_actions = num_actions
-
-        if pretr_agent:
-            self.continue_training(pretr_agent)
-
-        self.target_agent = self.nn_model(input_size=input_shape, action_dim=num_actions)
-        self.update_target()
-
-        self.optimizer = tf.keras.optimizers.Adam()
-        self.buffer = ReplayBuffer(capacity=buffer_size)
-        self.gamma = gamma
-        self.epsilon = epsilon
-        self.epsilon_decay = epsilon_decay
-
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
@@ -216,36 +180,3 @@ class Double_Dueling_DQN_Agent(Double_DQN_Agent):
 
         return model
     
-class Expected_SARSA_Agent(DQN_Agent):
-    def replay_experience(self, batch_size):
-        if self.memory_type == 'PER':
-            with tf.GradientTape() as tape:
-                state_arr, action_arr, reward_arr, next_state_arr, done_arr, sampled_idxs, is_weights = self.buffer.replay_buffer_sampling(batch_size)
-                predicts = tf.reduce_sum(self.agent(state_arr, training=True)*action_arr, axis=1)
-
-                next_q_values = self.target_agent(next_state_arr, training=False)
-                expected_q = tf.reduce_sum(tf.nn.softmax(next_q_values)*next_q_values, axis=1)
-
-                targets = reward_arr + self.gamma*next_q_values*(1-done_arr)
-                td = targets - predicts
-                loss = tf.reduce_mean(is_weights * td**2)
-            grads = tape.gradient(loss, self.agent.trainable_variables)
-            self.optimizer.apply_gradients(zip(grads, self.agent.trainable_variables))
-            
-            return abs(td), sampled_idxs
-        
-        else:
-            with tf.GradientTape() as tape:
-                state_arr, action_arr, reward_arr, next_state_arr, done_arr = self.buffer.replay_buffer_sampling(batch_size)
-                predicts = tf.reduce_sum(self.agent(state_arr, training=True)*action_arr, axis=1)
-                
-                next_q_values = self.target_agent(next_state_arr, training=False)
-                expected_q = tf.reduce_sum(tf.nn.softmax(next_q_values)*next_q_values, axis=1)
-
-                targets = reward_arr + self.gamma*expected_q*(1-done_arr)
-                td = targets - predicts
-                loss = tf.reduce_mean(td**2)
-            grads = tape.gradient(loss, self.agent.trainable_variables)
-            self.optimizer.apply_gradients(zip(grads, self.agent.trainable_variables))
-
-            return
