@@ -95,7 +95,7 @@ class DQN_Agent():
     def continue_training(self, mdir):
         self.agent.load_weights(mdir)
     
-class Double_DQN_Agent(DQN_Agent):
+class DoubleDQN_Agent(DQN_Agent):
     def replay_experience(self, batch_size):
         if self.memory_type == 'PER':
             with tf.GradientTape() as tape:
@@ -146,7 +146,7 @@ class Double_DQN_Agent(DQN_Agent):
 
         return action
     
-class Dueling_DQN_Agent(DQN_Agent):
+class DuelingDQN_Agent(DQN_Agent):
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
@@ -163,7 +163,7 @@ class Dueling_DQN_Agent(DQN_Agent):
 
         return model
     
-class Double_Dueling_DQN_Agent(Double_DQN_Agent):
+class DoubleDuelingDQN_Agent(DoubleDQN_Agent):
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
