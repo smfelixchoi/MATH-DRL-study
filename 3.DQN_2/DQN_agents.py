@@ -87,7 +87,10 @@ class DQN_Agent():
     def linear_schedule_epsilon(self, episode:int, max_episode:int):
         start_episode = 0
         start, end = self.epsilon_start, self.epsilon_min
-        return (start*(max_episode-episode) + end*(episode-start_episode)) / (max_episode - start_episode)
+        if episode < max_episode:
+            return (start*(max_episode-episode) + end*(episode-start_episode)) / (max_episode - start_episode)
+        else:
+            return end
     
     def exp_schedule_epsilon(self, decay):
         return self.epsilon * decay

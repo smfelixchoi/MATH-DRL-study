@@ -47,9 +47,9 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
                 else:
                     agent.replay_experience(batch_size)
             
-            # if agent.buffer.size() >= batch_size and counter%replay_period[1] == 0:
-                # agent.update_target()
-            agent.soft_update_target(TAU=0.005)
+            if agent.buffer.size() >= batch_size and counter%replay_period[1] == 0:
+                agent.update_target()
+            # agent.soft_update_target(TAU=0.005)
 
             state = next_state
 
@@ -61,7 +61,7 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
             if episode > beta_anneal_episodes[1]:
                 agent.buffer.beta = 1
 
-        agent.epsilon = agent.linear_schedule_epsilon(episode=episode, max_episode = int(num_episodes*0.7))
+        agent.epsilon = agent.linear_schedule_epsilon(episode=episode, max_episode = 300)
         
         print(f'Episode: {episode+1}, total reward: {total_reward}, buffer size: {agent.buffer.size()}, epsilon: {agent.epsilon}')
 
@@ -86,8 +86,8 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
 
 env = gym.make('CartPole-v1')
 buffer_size=2**15
-num_episodes = 1000
-beta_anneal_episodes = (400, 1000)
+num_episodes = 600
+beta_anneal_episodes = (200, 600)
 replay_period = (1,200)
 batch_size = 64
 repeats = 3
