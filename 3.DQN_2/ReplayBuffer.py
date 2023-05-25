@@ -6,6 +6,7 @@ from SumTree import Node, create_tree, retrieve, leaf_update, propagate_changes
 
 class ReplayBuffer():
     def __init__(self, capacity=10000):
+        self.capacity = capacity
         self.buffer = deque(maxlen=capacity)
         
     def store(self, state, action, reward, next_state, done):

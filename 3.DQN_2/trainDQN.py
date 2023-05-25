@@ -14,12 +14,11 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
     memory_type = agent.memory_type
     if memory_type:
         fig_path = agent_name+'/figs_PER/'
-        if not os.path.exists(fig_path):
-            os.makedirs(fig_path)
     else:
         fig_path = agent_name+'/figs/'
-        if not os.path.exists(fig_path):
-            os.makedirs(fig_path)
+
+    if not os.path.exists(fig_path):
+        os.makedirs(fig_path)
 
     reward_list = []
     action_num = env.action_space.n
@@ -62,9 +61,9 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
             if episode > beta_anneal_episodes[1]:
                 agent.buffer.beta = 1
 
-        agent.epsilon = agent.schedule_epsilon(episode=episode, max_episode = int(num_episodes*0.7))
+        agent.epsilon = agent.linear_schedule_epsilon(episode=episode, max_episode = int(num_episodes*0.7))
         
-        print(f'Episode: {episode+1}, total reward: {total_reward}, buffer size: {agent.buffer.size()}')
+        print(f'Episode: {episode+1}, total reward: {total_reward}, buffer size: {agent.buffer.size()}, epsilon: {agent.epsilon}')
 
     if memory_type:
         agent.save_model(os.path.join(agent_name + '/' + agent_name + '_PER_' + str(index)))

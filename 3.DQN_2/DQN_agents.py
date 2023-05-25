@@ -2,12 +2,13 @@ import gymnasium as gym
 import numpy as np
 import tensorflow as tf
 from tensorflow.keras import Model, Input
-from tensorflow.keras.layers import Dense, Add
+from tensorflow.keras.layers import Dense, BatchNormalization, Add
+from tensorflow.keras.activations import relu, tanh
 
 from ReplayBuffer import ReplayBuffer, Prioritized_Experience_ReplayBuffer
 
 class DQN_Agent():
-    def __init__(self, input_shape=(4,), num_actions=2, gamma=0.99, epsilon=0.25, epsilon_decay=0.99, epsilon_min=0.05, memory_type='PER', buffer_size=2**15, pretrained=''):
+    def __init__(self, input_shape=(4,), num_actions=2, gamma=0.99, epsilon=1.0, epsilon_min=0.1, memory_type='PER', buffer_size=2**15, pretrained=''):
         
         self.num_actions = num_actions
         self.agent = self.nn_model(input_size=input_shape, action_dim=num_actions)
@@ -22,27 +23,28 @@ class DQN_Agent():
             self.buffer = ReplayBuffer(capacity=buffer_size)
 
         self.gamma = gamma
+        self.epsilon_start = epsilon
         self.epsilon = epsilon
-        self.epsilon_decay = epsilon_decay
         self.epsilon_min = epsilon_min
 
         if pretrained:
             self.continue_training(pretrained)
 
     def nn_model(self, input_size, action_dim):
-    
         input_layer = Input(shape=input_size)
-        x = Dense(128, activation='relu', kernel_initializer='he_uniform')(input_layer)
-        x = Dense(64, activation='relu', kernel_initializer='he_uniform')(x)
-        x = Dense(16, activation='relu', kernel_initializer='he_uniform')(x)
+        x = Dense(128, activation='tanh', kernel_initializer='glorot_uniform')(input_layer)
+        x = Dense(64, activation='tanh', kernel_initializer='glorot_uniform')(x)
         output_layer = Dense(action_dim, activation='linear')(x)
 
         model = Model(input_layer, outputs = output_layer)
-
         return model
     
     def update_target(self):
         self.target_agent.set_weights(self.agent.get_weights())
+
+    def soft_update_target(self, TAU):
+        for t, e in zip(self.target_agent.trainable_variables, self.agent.trainable_variables): 
+            t.assign(t * (1 - TAU) + e * TAU)
 
     def replay_experience(self, batch_size):
         if self.memory_type == 'PER':
@@ -56,7 +58,7 @@ class DQN_Agent():
             grads = tape.gradient(loss, self.agent.trainable_variables)
             self.optimizer.apply_gradients(zip(grads, self.agent.trainable_variables))
             
-            return abs(td), sampled_idxs
+            return td, sampled_idxs
         
         else:
             with tf.GradientTape() as tape:
@@ -73,21 +75,22 @@ class DQN_Agent():
             return 
 
     def get_action(self, observation):
-        observation = observation.reshape(1,-1)
-        action_logits = self.agent.predict_on_batch(tf.convert_to_tensor(observation))
+        action_logits = self.agent.predict_on_batch(observation.reshape(1,-1))
 
         should_explore = np.random.rand()
         if should_explore < self.epsilon:
             action = np.random.choice(self.num_actions)
         else:
             action = np.argmax(action_logits, axis=1)[0]
-            
-        if self.epsilon > self.epsilon_min:
-            self.epsilon *= self.epsilon_decay
-        else:
-            self.epsilon = self.epsilon_min
-
         return action
+    
+    def linear_schedule_epsilon(self, episode:int, max_episode:int):
+        start_episode = 0
+        start, end = self.epsilon_start, self.epsilon_min
+        return (start*(max_episode-episode) + end*(episode-start_episode)) / (max_episode - start_episode)
+    
+    def exp_schedule_epsilon(self, decay):
+        return self.epsilon * decay
 
     def save_model(self, mdir):
         self.agent.save_weights(mdir)
@@ -111,7 +114,7 @@ class DoubleDQN_Agent(DQN_Agent):
             grads = tape.gradient(loss, self.agent.trainable_variables)
             self.optimizer.apply_gradients(zip(grads, self.agent.trainable_variables))
             
-            return abs(td), sampled_idxs
+            return td, sampled_idxs
         
         else:
             with tf.GradientTape() as tape:
@@ -130,10 +133,8 @@ class DoubleDQN_Agent(DQN_Agent):
             return
 
     def get_action(self, observation):
-        
-        obs_tf = tf.convert_to_tensor(observation.reshape(1,-1))
-        action_logits1 = self.agent.predict_on_batch(obs_tf)
-        action_logits2 = self.target_agent.predict_on_batch(obs_tf)
+        action_logits1 = self.agent.predict_on_batch(observation.reshape(1,-1))
+        action_logits2 = self.target_agent.predict_on_batch(observation.reshape(1,-1))
 
         action_logits = action_logits1 + action_logits2
 
@@ -142,7 +143,6 @@ class DoubleDQN_Agent(DQN_Agent):
             action = np.random.choice(self.num_actions)
         else:
             action = np.argmax(action_logits, axis=1)[0]
-        self.epsilon *= self.epsilon_decay
 
         return action
     
@@ -150,9 +150,8 @@ class DuelingDQN_Agent(DQN_Agent):
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
-        x = Dense(128, activation='relu', kernel_initializer='he_uniform')(input_layer)
-        x = Dense(64, activation='relu', kernel_initializer='he_uniform')(x)
-        x = Dense(16, activation='relu', kernel_initializer='he_uniform')(x)
+        x = Dense(128, activation='tanh', kernel_initializer='glorot_uniform')(input_layer)
+        x = Dense(64, activation='tanh', kernel_initializer='glorot_uniform')(x)
 
         v_out = Dense(1, activation='linear')(x)
         adv_out = Dense(action_dim, activation='linear')(x)
@@ -167,10 +166,9 @@ class DoubleDuelingDQN_Agent(DoubleDQN_Agent):
     def nn_model(self, input_size, action_dim):
         
         input_layer = Input(shape=input_size)
-        x = Dense(128, activation='relu', kernel_initializer='he_uniform')(input_layer)
-        x = Dense(64, activation='relu', kernel_initializer='he_uniform')(x)
-        x = Dense(16, activation='relu', kernel_initializer='he_uniform')(x)
-
+        x = Dense(128, activation='tanh', kernel_initializer='glorot_uniform')(input_layer)
+        x = Dense(64, activation='tanh', kernel_initializer='glorot_uniform')(x)
+        
         v_out = Dense(1, activation='linear')(x)
         adv_out = Dense(action_dim, activation='linear')(x)
         adv_mean = -tf.reduce_mean(adv_out, axis=1)
