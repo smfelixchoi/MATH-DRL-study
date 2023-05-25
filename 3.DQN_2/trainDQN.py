@@ -6,11 +6,11 @@ from tensorflow.keras import Model, Input
 from tensorflow.keras.layers import Dense, Add
 import matplotlib.pyplot as plt
 
-from DQN_agents import DQN_Agent, Double_DQN_Agent, Dueling_DQN_Agent, Double_Dueling_DQN_Agent
+from DQN_agents import DQN_Agent, DoubleDQN_Agent, DuelingDQN_Agent, DoubleDuelingDQN_Agent
 
 def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_size, repeats=1):
     
-    agent_name = agent.__class__.__name__.split('_')[:-1]
+    agent_name = agent.__class__.__name__.split('_')[0]
     if not os.path.exists(agent_name):
         os.makedirs(agent_name)
 
@@ -69,7 +69,7 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
         plt.xticks(fontsize=5)
         plt.yticks(fontsize=5)
         plt.grid(linewidth=.1)
-        plt.savefig('figs_'+agent.memory_type+'/'+agent_name+'_'+str(j)+'.png', bbox_inches='tight')
+        plt.savefig('figs/'+agent_name+'_'+str(j)+'.png', bbox_inches='tight')
         plt.close()
 
     mean_reward_array = np.mean(reward_array, axis=0)
@@ -83,7 +83,7 @@ def train(env, agent, num_episodes, beta_anneal_episodes, replay_period, batch_s
     plt.xticks(fontsize=5)
     plt.yticks(fontsize=5)
     plt.grid(linewidth=.1)
-    plt.savefig('figs_'+agent.memory_type+'/'+agent_name+'average_'+str(repeats)+'.png', bbox_inches='tight')
+    plt.savefig('figs/'+agent_name+'average_'+str(repeats)+'.png', bbox_inches='tight')
     plt.close()
 
     return reward_array
@@ -113,7 +113,7 @@ reward_array = train(env, agent, num_episodes, beta_anneal_episodes, replay_peri
 
 
 ## Double DQN
-agent = Double_DQN_Agent(input_shape=env.observation_space.shape, 
+agent = DoubleDQN_Agent(input_shape=env.observation_space.shape, 
                          num_actions=env.action_space.n,
                          gamma=0.99,
                          epsilon=1,
@@ -127,7 +127,7 @@ reward_array = train(env, agent, num_episodes, beta_anneal_episodes, replay_peri
 
 
 ## Dueling DQN
-agent = Dueling_DQN_Agent(input_shape=env.observation_space.shape, 
+agent = DuelingDQN_Agent(input_shape=env.observation_space.shape, 
                          num_actions=env.action_space.n,
                          gamma=0.99,
                          epsilon=1,
@@ -141,7 +141,7 @@ reward_array = train(env, agent, num_episodes, beta_anneal_episodes, replay_peri
 
 
 ## Double Dueling DQN
-agent = Double_Dueling_DQN_Agent(input_shape=env.observation_space.shape, 
+agent = DoubleDuelingDQN_Agent(input_shape=env.observation_space.shape, 
                                 num_actions=env.action_space.n,
                                 gamma=0.99,
                                 epsilon=1,
