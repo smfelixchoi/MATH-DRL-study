@@ -1,0 +1,2 @@
+model_checkpoint_path: "DuelingDQN_PER_2"
+all_model_checkpoint_paths: "DuelingDQN_PER_2"

@@ -1,0 +1,2 @@
+model_checkpoint_path: "DQN_PER_2"
+all_model_checkpoint_paths: "DQN_PER_2"
