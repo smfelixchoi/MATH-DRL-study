@@ -23,11 +23,11 @@ From Reinforcement Learning to Deep Reinforcement Learning
     - Prioritized Experience Replay (5/26, 최선묵)
 
 4. Policy Gradient 
-    - REINFORCE and REINFORCE with baseline (5/26, 최선묵)
+    - REINFORCE and REINFORCE with baseline (6/2, 최선묵)
 
 5. Actor Critic 
-    - Asynchornous Advantage Actor Critic (A3C) and A2C (6/2, 최찬혁)
+    - Asynchornous Advantage Actor Critic (A3C) and A2C (6/9, 최찬혁)
 
-6. Proximal Policy Optimization (PPO) (6/9, 최선묵)
+6. Proximal Policy Optimization (PPO) (최선묵)
 
-7. Deep Deterministic Policy Gradient 
+7. Deep Deterministic Policy Gradient (미정)
