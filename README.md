@@ -1,33 +1,36 @@
 # MATH-DRL-study
 From Reinforcement Learning to Deep Reinforcement Learning
 
-- 발표자: 통합과정 최찬혁, 석사과정 최선묵
+- Presenters: Chanhyeok Choi, Sunmook Choi
 
 ## Plans 
-0. Introduction to OpenAI gym (3/31, 최찬혁)
+0. Introduction to OpenAI gym (3/31, Chanhyeok Choi)
 
-1. Dynamic Programming (3/25, 최선묵)
+1. Dynamic Programming (3/25, Sunmook Choi)
     - Bellman Equation Review
     - Value Iteration
     - Policy Iteration
 
 2. Reinforcement Learning
-    - Monte Carlo (MC) methods (3/31, 최찬혁)
-    - Temporal Difference (TD) methods (4/14, 최선묵)
+    - Monte Carlo (MC) methods (3/31, Chanhyeok Choi)
+    - Temporal Difference (TD) methods (4/14, Sunmook Choi)
         - Sarsa, Q-learning, Expected Sarsa
         - Double Learning
 
 3. Deep Q-Network 
-    - DQN (4/21, 최찬혁)
-    - Double DQN and Dueling DQN (4/28, 최찬혁)
-    - Prioritized Experience Replay (5/26, 최선묵)
+    - DQN (4/21, Chanhyeok Choi)
+    - Double DQN and Dueling DQN (4/28, Chanhyeok Choi)
+    - Prioritized Experience Replay (5/26, Sunmook Choi)
 
 4. Policy Gradient 
-    - REINFORCE and REINFORCE with baseline (6/2, 최선묵)
+    - REINFORCE and REINFORCE with baseline (6/2, Sunmook Choi)
 
-5. Actor Critic 
-    - Asynchornous Advantage Actor Critic (A3C) and A2C (6/9, 최찬혁)
+5. Actor Critic Methods
+    - Review of Actor Critic Methods (6/9, Chanhyeok Choi)
 
-6. Proximal Policy Optimization (PPO) (최선묵)
-
-7. Deep Deterministic Policy Gradient (미정)
+6. A3C 
+	- Asynchronous Advantage Actor Critic (A3C) and MultiProcessing (8/4, Chanhyeok Choi)
+	
+6. Proximal Policy Optimization (9/1, Sunmook Choi)
+	
+7. Deep Deterministic Policy Gradient (DDPG) (Sunmook Choi)
