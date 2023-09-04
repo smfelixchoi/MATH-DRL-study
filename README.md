@@ -28,9 +28,8 @@ From Reinforcement Learning to Deep Reinforcement Learning
 5. Actor Critic Methods
     - Review of Actor Critic Methods (6/9, Chanhyeok Choi)
 
-6. A3C 
-	- Asynchronous Advantage Actor Critic (A3C) and MultiProcessing (8/4, Chanhyeok Choi)
+6. A3C
+    - Asynchronous Advantage Actor Critic (A3C) and MultiProcessing (8/4, Chanhyeok Choi)
 	
-6. Proximal Policy Optimization (9/1, Sunmook Choi)
+7. Proximal Policy Optimization (9/4, Sunmook Choi)
 	
-7. Deep Deterministic Policy Gradient (DDPG) (Sunmook Choi)
